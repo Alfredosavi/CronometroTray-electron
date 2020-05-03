@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  </head>    
+  <body>
+    <h1 class="h1 text-center">Cronômetro</h1>
+    <div id="teste"></div>
+    <div id="contador" class="d-flex justify-content-center">
+      <h2 class="h2" id="Horas">00</h2>
+      <h2 class="h2" id="Minutos">:00</h2>
+      <h2 class="h2" id="Segundos">:00</h2>
+      <h2 class="h2" id="Centesimas">:00</h2>
+    </div>
+    <div class="text-center">
+      <button class="btn btn-primary" id="inicio" onclick="inicio();">Iniciar</button>
+      <button class="btn btn-success" id="parar" onclick="parar();">Pausar</button>
+      <button class="btn btn-warning" id="continuar" onclick="inicio();" >Continuar</button>
+      <button class="btn btn-info" id="reinicio" onclick="reinicio();">Reiniciar</button>
+    </div>
+
+    <script>
+      let timeUpdate;
+      var centesimas = 0, segundos = 0, minutos = 0, horas = 0;
+      const { ipcRenderer } = require('electron');
+      ipcRsadsenderer.send('sendTime', "asdasdoi");
+      function inicio () {
+        control = setInterval(cronometro,10);
+        document.getElementById("inicio").disabled = true;
+        document.getElementById("parar").disabled = false;
+        document.getElementById("continuar").disabled = true;
+        document.getElementById("reinicio").disabled = false;
+      }
+
+      function parar () {
+        clearInterval(control);
+        document.getElementById("parar").disabled = true;
+        document.getElementById("continuar").disabled = false;
+      }
+
+      function reinicio () {
+        clearInterval(control);
+        centesimas = 0, segundos = 0, minutos = 0, horas = 0;
+
+        Centesimas.innerHTML = ":00";
+        Segundos.innerHTML = ":00";
+        Minutos.innerHTML = ":00";
+        Horas.innerHTML = "00";
+        document.getElementById("inicio").disabled = false;
+        document.getElementById("parar").disabled = true;
+        document.getElementById("continuar").disabled = true;
+        document.getElementById("reinicio").disabled = true;
+      }
+      
+      function cronometro () {
+        if (centesimas < 99) {
+          centesimas++;
+          if (centesimas < 10) { centesimas = "0"+centesimas }
+          Centesimas.innerHTML = ":"+centesimas;
+        }
+        if (centesimas == 99) {
+          centesimas = -1;
+        }
+        if (centesimas == 0) {
+          segundos ++;
+          if (segundos < 10) { segundos = "0"+segundos }
+          Segundos.innerHTML = ":"+segundos;
+        }
+        if (segundos == 59) {
+          segundos = -1;
+        }
+        if ( (centesimas == 0)&&(segundos == 0) ) {
+          minutos++;
+          if (minutos < 10) { minutos = "0"+minutos }
+          Minutos.innerHTML = ":"+minutos;
+        }
+        if (minutos == 59) {
+          minutos = -1;
+        }
+        if ( (centesimas == 0)&&(segundos == 0)&&(minutos == 0) ) {
+          horas ++;
+          if (horas < 10) { horas = "0"+horas }
+          Horas.innerHTML = horas;
+        }
+        timeUpdate = `${horas}:${minutos}:${segundos}:${centesimas}`;
+        // teste.innerHTML = timeUpdate;
+        ipcRenderer.send('sendTime', "oi");
+      }
+    </script>
+    <script src="./node_modules/jquery/dist/jquery.slim.min.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+node_modules/
+package-lock.json
+
+dist/cronometro-win32-x64/
+
+.env
+.vscode/
